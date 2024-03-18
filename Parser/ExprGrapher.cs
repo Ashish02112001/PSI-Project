@@ -1,11 +1,4 @@
 ﻿using PSI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.Unicode;
-using System.Threading.Tasks;
 
 namespace Parser {
    class ExprGrapher : Visitor<int> {
@@ -32,6 +25,7 @@ namespace Parser {
          mSb.AppendLine ($"id{++mId}([{binary.Op.Text}]); id{mId} --> id{a}; id{mId} --> id{b}");
          return mId;
       }
+
       public void WriteToFile (string exp) {
          string str = $$"""
             <!DOCTYPE html>

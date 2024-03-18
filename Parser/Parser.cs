@@ -2,7 +2,7 @@
 using static Token.E;
 
 class Parser {
-   public Parser (Tokenizer tokenizer) 
+   public Parser (Tokenizer tokenizer)
       => mToken = mPrevious = (mTokenizer = tokenizer).Next ();
    Tokenizer mTokenizer;
    Token mToken, mPrevious;
@@ -10,14 +10,34 @@ class Parser {
    public NExpr Parse () => Expression ();
 
    // Implementation --------------------------------------
-   // expression = term .
-   NExpr Expression () 
-      => Term ();
+   // expression = equality .
+   NExpr Expression ()
+      => Equality ();
+
+   // equality = comparison[("=" | "<>") comparison] .
+   NExpr Equality () {
+      var expr = Comparison ();
+      while (Match (NEQ, EQ)) {
+         var op = mPrevious;
+         expr = new NBinary (expr, op, Comparison ());
+      }
+      return expr;
+   }
+
+   // comparison = term[("<" | "<=" | ">" | ">=") term] .
+   NExpr Comparison () {
+      var expr = Term ();
+      while (Match (LEQ, GEQ, EQ, LT, GT)) {
+         var op = mPrevious;
+         expr = new NBinary (expr, op, Term ());
+      }
+      return expr;
+   }
 
    // term = factor { ("+" | "-") factor } .
    NExpr Term () {
       var expr = Factor ();
-      while  (Match (ADD, SUB)) {
+      while (Match (ADD, SUB))  {
          var op = mPrevious;
          expr = new NBinary (expr, op, Factor ());
       }
@@ -36,7 +56,7 @@ class Parser {
 
    // unary = ( "-" | "+" ) unary | primary .
    NExpr Unary () {
-      if (Match (ADD, SUB)) 
+      if (Match (ADD, SUB))
          return new NUnary (mPrevious, Unary ());
       return Primary ();
    }
@@ -58,7 +78,7 @@ class Parser {
    }
 
    // Match and consume a token on match
-   bool Match (params Token.E[] kinds) {
+   bool Match (params Token.E[] kinds)  {
       if (kinds.Contains (mToken.Kind)) {
          mPrevious = mToken;
          mToken = mTokenizer.Next ();
