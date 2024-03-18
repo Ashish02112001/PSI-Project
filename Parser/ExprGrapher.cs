@@ -5,24 +5,24 @@ namespace Parser {
       StringBuilder mSb = new ();
       int mId = 0;
       public override int Visit (NLiteral literal) {
-         mSb.AppendLine ($"id{++mId}[{literal.Value.Text}]");
+         mSb.AppendLine ($"id{++mId}[{literal.Value.Text},{literal.Type}]");
          return mId;
       }
 
       public override int Visit (NIdentifier ident) {
-         mSb.AppendLine ($"id{++mId}[{ident.Name.Text}]");
+         mSb.AppendLine ($"id{++mId}[{ident.Name.Text},{ident.Type}]");
          return mId;
       }
 
       public override int Visit (NUnary unary) {
          int d = unary.Expr.Accept (this);
-         mSb.AppendLine ($"id{++mId}([{unary.Op.Text}]); id{mId} --> id{d}");
+         mSb.AppendLine ($"id{++mId}([{unary.Op.Text},{unary.Type}]); id{mId} --> id{d}");
          return mId;
       }
 
       public override int Visit (NBinary binary) {
          int a = binary.Left.Accept (this), b = binary.Right.Accept (this);
-         mSb.AppendLine ($"id{++mId}([{binary.Op.Text}]); id{mId} --> id{a}; id{mId} --> id{b}");
+         mSb.AppendLine ($"id{++mId}([{binary.Op.Text},{binary.Type}]); id{mId} --> id{a}; id{mId} --> id{b}");
          return mId;
       }
 
