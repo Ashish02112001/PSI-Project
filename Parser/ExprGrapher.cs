@@ -42,7 +42,7 @@ namespace Parser {
               </script>
             </body>
             """;
-         File.WriteAllText ("C:/etc/Text.html", str);
+         File.WriteAllText ("../Output.html", str);
       }
    }
 }
